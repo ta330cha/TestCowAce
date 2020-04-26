@@ -16,6 +16,7 @@ Interval = 60 # = 60sec = 1min
 
 #---File Names---#
 
+
 def main():
     threadTimer = ThreadTrader(Interval)
     threadTimer.start()

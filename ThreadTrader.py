@@ -34,7 +34,7 @@ class ThreadTrader(threading.Timer):
         print(logger)
         
         #---Select Mode---#
-        self.tradeMode = __selectMode()
+        self.tradeMode = self.__selectMode()
         
         #---Publish New Order---#
         if self.tradeMode == ModeFlag.PublishNewOrder:
