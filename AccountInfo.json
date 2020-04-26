@@ -1,0 +1,11 @@
+{
+    "AccountName": "OandaTest",
+    "URL": "https://api-fxpractice.oanda.com",
+    "AccountID": "101-009-11581194-003",
+    "headers": [
+        {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 4ee0d39b1ac9ed6b7fac755c3ed41ef6-02a9d24cc7fd393e64aca36fb994caf2"
+        }
+    ]
+}

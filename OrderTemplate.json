@@ -1,0 +1,13 @@
+{
+    "instrument" : "USD_JPY",
+    "units" : 0.05,
+    "side" : "buy", 
+    "type" : "stop",
+    "expiry" : "2999-12-31T23:59:59Z",
+    "price" : 108.000,
+    "lowerBound" : 107.995,
+    "upperBound" : 108.005,
+    "stopLoss" : 0,
+    "takeProfit" : 108.050,
+    "trailingStop" : 0
+}
