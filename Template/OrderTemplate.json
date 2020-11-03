@@ -1,0 +1,13 @@
+{
+    "order": {
+    "instrument": "USD_JPY", 
+    "positionFill": "DEFAULT", 
+    "price": "---.---", 
+        "takeProfitOnFill": {
+            "price": "---.---", 
+            "timeInForce": "GTC"
+        }, 
+        "type": "---", 
+        "units": 0
+    }
+}

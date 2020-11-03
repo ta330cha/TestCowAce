@@ -12,18 +12,25 @@ import signal
 #---Library---#
 import ArpOandaPy as oanda
 import OandaPyLib as opl
+from ArpCSVList import ArpCSVList
 
-class ThreadTrader():
+#---Manager---#
+dataMng = ArpCSVList()
+
+class ThreadGrabber():
     def __init__(self, interval, startDelay):
         self.startDelay = startDelay
         self.interval = interval
     
     def task(self, arg, args):
-        logger = "ThreadTimerTrader---{}".format(datetime.now().strftime("%Y/%m/%d %H:%M.%S"))
-        print(logger)   
+        logger = "ThreadTimerGrabber---{}".format(datetime.now().strftime("%Y/%m/%d %H:%M.%S"))
+        timeGetPrice, ask, bid = opl.GetPrices()
+        dataMng.setMarketPrice(ask, bid)
+        logger = logger + ',' + str(timeGetPrice) + ',' + str(ask) + ',' + str(bid)
+        print(logger)
     
     def start(self):
         signal.signal(signal.SIGALRM, self.task)
         signal.setitimer(signal.ITIMER_REAL, self.startDelay, self.interval)
 
-#---END---
+#---END---#

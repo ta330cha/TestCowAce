@@ -12,16 +12,23 @@ import numpy as np
 
 #---My Package---#
 import OandaPyLib as opl
+from ArpCSVList import ArpCSVList
 
 #---Test Data---#
 
+#---Manager---#
+dataMng = ArpCSVList()
 
 
 #---Start Script---#
-opl.buyStop(opl.BuyLots, 110.000, 111.000)
-opl.sellStop(opl.SellLots, 108.000, 107.500)
-opl.buyLimit(opl.BuyLots, 107.500, 108.000)
-opl.sellLimit(opl.SellLots, 110.500, 109.000)
+opl.BuyStop(105.000, 106.010, 1)
+opl.SellStop(101.000, 100.000, 1)
+opl.BuyLimit(101.500, 108.000, 1)
+opl.SellLimit(110.500, 109.000, 1)
 
+timeGetPrice, ask, bid = opl.GetPrices()
+print(ask)
+print(bid)
+dataMng.setMarketPrice(ask, bid)
 
 #---End---#

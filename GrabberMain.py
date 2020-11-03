@@ -13,27 +13,18 @@ from datetime import datetime
 import OandaPyLib as opl
 
 #---Threads---#
-from ThreadTrader import ThreadTrader
 from ThreadGrabber import ThreadGrabber
 
 #---Settings---#
-IntervalTrader = 60 # = 60sec = 1min
 IntervalGrabber = 10 # = 10sec
 startDelay = 1
 
-#---File Names---#
-OrderTemplatePathname = './Template/OrderTemplate.json'
-TransTemplatePathname = './Template/TransTemplate.json'
-OrderRequestsDirName = "./OrderRequests/"
-
 #---Timer Threads---#
-threadTimerTrader = ThreadTrader(IntervalTrader, startDelay)
 threadTimerGrabber = ThreadGrabber(IntervalGrabber, startDelay)
 
 #---Start---#
 def main():
-    threadTimerTrader.start()
-    #threadTimerGrabber.start()
+    threadTimerGrabber.start()
     while(True):
         opl.RequestOrder()
         time.sleep(1)

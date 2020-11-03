@@ -1,0 +1,7 @@
+{
+    "trans": {
+        "id":0,
+        "takeProfitOnFill": {"price": "---.---", "timeInForce": "GTC"}, 
+        "stopLossOnFill": {"price": "---.---", "timeInForce": "GTC"}
+    }
+}
