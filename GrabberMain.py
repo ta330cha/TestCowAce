@@ -18,6 +18,7 @@ from ThreadGrabber import ThreadGrabber
 #---Settings---#
 IntervalGrabber = 10 # = 10sec
 startDelay = 1
+intervalRequest = 1
 
 #---Timer Threads---#
 threadTimerGrabber = ThreadGrabber(IntervalGrabber, startDelay)
@@ -27,7 +28,7 @@ def main():
     threadTimerGrabber.start()
     while(True):
         opl.RequestOrder()
-        time.sleep(1)
+        time.sleep(intervalRequest)
 
 if __name__ == '__main__':
     main()

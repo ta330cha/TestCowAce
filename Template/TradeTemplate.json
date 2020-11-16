@@ -1,0 +1,6 @@
+{
+    "tradeID":0,
+    "trades": {
+        "stopLoss": {"price": "---.---", "timeInForce": "GTC"}
+    }
+}

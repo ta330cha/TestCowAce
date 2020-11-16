@@ -11,6 +11,11 @@ from collections import OrderedDict
 import pprint
 import numpy as np
 
+from oandapyV20 import API
+from oandapyV20.endpoints.trades import TradeCRCDO, TradeDetails
+import oandapyV20.endpoints.positions as positions
+import oandapyV20.endpoints.trades as trades
+
 #---My Package---#
 import OandaPyLib as opl
 from ArpCSVList import ArpCSVList
@@ -27,22 +32,19 @@ dataMng = ArpCSVList()
 
 
 #---Start Script---#
+api = API(access_token=authorization)
 
+data01={
+    "stopLoss": {
+        "price": "101.000",
+        "timeInForce": "GTC",
+    },
+}
 
-opl.BuyStop(105.000, 106.010, 1)
-opl.BuyLimit(101.500, 108.000, 1)
+print(data01)
 
-#opl.SellLimit(110.500, 109.000, 1)
-#opl.SellStop(101.000, 100.000, 1)
-
-"""
-timeGetPrice, ask, bid = opl.GetPrices()
-print(ask)
-print(bid)
-dataMng.setMarketPrice(ask, bid)
-"""
-
-opl.SetStopLoss(213, 100.000)
-opl.SetStopLoss(211, 100.000)
+trade_id = 217
+ep=TradeCRCDO(accountID=account_id,tradeID=trade_id,data=data01)
+rsp=api.request(ep)
 
 #---End---#

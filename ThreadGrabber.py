@@ -14,7 +14,7 @@ import ArpOandaPy as oanda
 import OandaPyLib as opl
 from ArpCSVList import ArpCSVList
 
-#---Manager---#
+#---Data Manager---#
 dataMng = ArpCSVList()
 
 class ThreadGrabber():
