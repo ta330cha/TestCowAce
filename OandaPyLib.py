@@ -40,15 +40,33 @@ OrderRequestsDirName = "./OrderRequests/"
 TransRequestsDirName = "./TransRequests/"
 TradeRequestsDirName = "./TradeRequests/"
 
+#---Settings---#
+MarginLevelLimit = 48
+
 #---Functions---#
+def GetMarginLevel():
+	ret = 0
+	try:
+		req = accounts.AccountSummary(accountID=account_id)
+		res = api.request(req)
+		marginAvailable = float(res["account"]["marginAvailable"])
+		marginUsed = float(res["account"]["marginUsed"])
+		ret = 50 * marginUsed / marginAvailable
+	except expression as identifier:
+		print(e)
+	return ret
+
 def GetPrices():
-    params = {"instruments" : instrument}
-    req = pricing.PricingInfo(accountID=account_id, params=params)
-    res = api.request(req)
-    priceTime = res['prices'][0]['time']
-    asksPrice = res['prices'][0]['asks'][0]['price']
-    bidsPrice = res['prices'][0]['bids'][0]['price']
-    return priceTime, asksPrice, bidsPrice
+	params = {"instruments" : instrument}
+	try:
+		req = pricing.PricingInfo(accountID=account_id, params=params)
+		res = api.request(req)
+		priceTime = res['prices'][0]['time']
+		asksPrice = res['prices'][0]['asks'][0]['price']
+		bidsPrice = res['prices'][0]['bids'][0]['price']
+	except Exception as e:
+		print(e)
+	return priceTime, asksPrice, bidsPrice
 
 def makeOrder(price, takeProfitPrice, orderType, units):
 	pathname = OrderTemplatePathname
@@ -65,15 +83,15 @@ def makeOrder(price, takeProfitPrice, orderType, units):
 	return None
 
 def makeStopLoss(tradeId, stopLossPrice):
-    pathname = TradeTemplatePathname
-    try:
-        with open(pathname, "r") as fr:
-            params = json.load(fr)
-            params["tradeID"] = tradeId
-            params["trades"]["stopLoss"]["price"] = str(stopLossPrice)
-            return params
-    except Exception as e:
-        print(e)
+	pathname = TradeTemplatePathname
+	try:
+		with open(pathname, "r") as fr:
+			params = json.load(fr)
+			params["tradeID"] = tradeId
+			params["trades"]["stopLoss"]["price"] = str(stopLossPrice)
+			return params
+	except Exception as e:
+		print(e)
 
 def dumpParam(params, dirName):
 	dt = datetime.now().strftime('%Y%m%d%H%M%S%f')
@@ -87,17 +105,17 @@ def dumpParam(params, dirName):
 	return None
 
 def dumpOrderParam(params):
-    dirName = OrderRequestsDirName
-    return dumpParam(params, dirName)
+	dirName = OrderRequestsDirName
+	return dumpParam(params, dirName)
 
 def dumpTradeParam(params):
-    dirName = TradeRequestsDirName
-    return dumpParam(params, dirName)
+	dirName = TradeRequestsDirName
+	return dumpParam(params, dirName)
 
 def readParam(pathname):
-    with open(pathname, "r") as fr:
-        params = json.load(fr)
-    return params
+	with open(pathname, "r") as fr:
+		params = json.load(fr)
+	return params
 
 def BuyLimit(price, takeProfitPrice, units):
 	params = makeOrder(price, takeProfitPrice, "LIMIT", units)
@@ -132,67 +150,67 @@ def SellStop(price, takeProfitPrice, units):
 	return ret
 
 def SetStopLoss(tradeId, stopLossPrice):
-    params = makeStopLoss(tradeId, stopLossPrice)
-    ret = False
-    if params is not None:
-        dumpTradeParam(params)
-        ret = True
-    return ret
+	params = makeStopLoss(tradeId, stopLossPrice)
+	ret = False
+	if params is not None:
+		dumpTradeParam(params)
+		ret = True
+	return ret
 
 def requestOrderPathname(pathname):
-    params = readParam(pathname)
-    res = None
-    try:
-        req = orders.OrderCreate(accountID=account_id, data=params)
-        if req is not None:
-            res=api.request(req)
-            os.remove(pathname)
-        return res
-    except Exception as e:
-        print(e)
-    return res
+	params = readParam(pathname)
+	res = None
+	try:
+		req = orders.OrderCreate(accountID=account_id, data=params)
+		if req is not None:
+			res=api.request(req)
+			os.remove(pathname)
+		return res
+	except Exception as e:
+		print(e)
+	return res
 
 def requestTradeCRCDOPathname(pathname):
-    rParams = readParam(pathname)
-    tradeId = rParams["tradeID"]
-    params = rParams["trades"]
-    res = None
-    try:
-        req = trades.TradeCRCDO(accountID=account_id, tradeID=tradeId, data=params)
-        if req is not None:
-            res=api.request(req)
-            os.remove(pathname)
-        return res
-    except Exception as e:
-        print(e)
-    return res
+	rParams = readParam(pathname)
+	tradeId = rParams["tradeID"]
+	params = rParams["trades"]
+	res = None
+	try:
+		req = trades.TradeCRCDO(accountID=account_id, tradeID=tradeId, data=params)
+		if req is not None:
+			res=api.request(req)
+			os.remove(pathname)
+		return res
+	except Exception as e:
+		print(e)
+	return res
 
 def RequestOrder():
-    flag = True
-    try:
-        files = os.listdir(OrderRequestsDirName)
-        if not files:
-            flag = False
-        if flag == True:
-            pathname = OrderRequestsDirName + "/" + files[0]
-            requestOrderPathname(pathname)
-        return flag
-    except Exception as e:
-        print(e)
-    return flag
+	flag = True
+	try:
+		files = os.listdir(OrderRequestsDirName)
+		if not files:
+			flag = False
+		if flag == True:
+			pathname = OrderRequestsDirName + "/" + files[0]
+			requestOrderPathname(pathname)
+		return flag
+	except Exception as e:
+		print(e)
+	return flag
 
 def RequestTradeCRCDO():
-    flag = True
-    try:
-        files = os.listdir(TradeRequestsDirName)
-        if not files:
-            flag = False
-        if flag == True:
-            pathname = TradeRequestsDirName + "/" + files[0]
-            requestTradeCRCDOPathname(pathname)
-        return flag
-    except Exception as e:
-        print(e)
-    return flag
+	flag = True
+	try:
+		files = os.listdir(TradeRequestsDirName)
+		if not files:
+			flag = False
+		if flag == True:
+			pathname = TradeRequestsDirName + "/" + files[0]
+			requestTradeCRCDOPathname(pathname)
+		return flag
+	except Exception as e:
+		print(e)
+	return flag
 
 #---END---#
