@@ -18,7 +18,8 @@ from oandapyV20 import API
 
 #---My Package---#
 import OandaPyLib as opl
-from ArpCSVList import ArpCSVList
+import ArpCSVList as dataMng
+import MovingAverage as ma
 
 #---Account Info---#
 url = os.environ.get('OANDA_API_URL', None)
@@ -28,7 +29,6 @@ authorization = os.environ.get('OANDA_API_AUTHORIZATION', None)
 instrument = os.environ.get('OANDA_API_INSTRUMENT', None)
 
 #---Manager---#
-dataMng = ArpCSVList()
 api = API(access_token=authorization)
 oanda = oandapyV20.API(environment="live",access_token=authorization)
 
@@ -65,6 +65,7 @@ print(marginUsed)
 print(50 * marginUsed / marginAvailable)
 '''
 
-print(opl.GetMarginLevel())
+#print(opl.GetMarginLevel())
+print(np.mean(ma.getData(5), axis=0, keepdims=True))
 
 #---End---#

@@ -10,7 +10,6 @@ from enum import Enum
 import signal
 
 #---Library---#
-import ArpOandaPy as oanda
 import OandaPyLib as opl
 
 class ThreadTrader():

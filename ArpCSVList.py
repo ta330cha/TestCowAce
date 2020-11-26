@@ -20,35 +20,39 @@ TimeStampTable = "TS"
 PredictDataTable = "PredictResult"
 MarketDataTable = "MarketResult"
 
-class ArpCSVList():
-    def __init__(self):
-        self.filename = "MarketPrice.csv"
+#---FileName---#
+DataFileName = "MarketPrice.csv"
 
-    def __del__(self):
-        #Logout from DB
-        print("Destruct ArpOandaPy")
-    
-    def writeCSV(self, prices):
-        try:
-            with open(self.filename, "a") as fw:
-                writer = csv.writer(fw)
-                writer.writerow(prices)
-            return True
-        except Exception as e:
-            print(e)
-        return False
-    
-    def getTimeStamp(self):
-        tableName = TimeStampTable
-        return datetime.now()
-    
-    def setMarketPrice(self, askPrice, bidPrice):
-        table = [askPrice, bidPrice]
-        try:
-            self.writeCSV(table)
-            return True
-        except Exception as e:
-            print(e)
-        return False
-    
+def writeCSV(prices):
+	try:
+		with open(DataFileName, "a") as fw:
+			writer = csv.writer(fw)
+			writer.writerow(prices)
+		return True
+	except Exception as e:
+		print(e)
+	return False
+
+def readCSV():
+	priceList = 0, 0
+	try:
+		with open(DataFileName, "r") as fr:
+			reader = csv.reader(fr, delimiter=',')
+			print(reader.Length)
+			for line in reader:
+				print(line)
+	except Exception as e:
+		print(e)
+	return reader
+
+
+def setMarketPrice(askPrice, bidPrice):
+	table = [askPrice, bidPrice]
+	try:
+		writeCSV(table)
+		return True
+	except Exception as e:
+		print(e)
+	return False
+
 #---END---#

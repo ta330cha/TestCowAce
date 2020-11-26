@@ -52,7 +52,7 @@ def GetMarginLevel():
 		marginAvailable = float(res["account"]["marginAvailable"])
 		marginUsed = float(res["account"]["marginUsed"])
 		ret = 50 * marginUsed / marginAvailable
-	except expression as identifier:
+	except Exception as identifier:
 		print(e)
 	return ret
 

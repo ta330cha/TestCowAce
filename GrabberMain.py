@@ -25,12 +25,11 @@ threadTimerGrabber = ThreadGrabber(IntervalGrabber, startDelay)
 
 #---Start---#
 def main():
-    threadTimerGrabber.start()
-    while(True):
-        opl.RequestOrder()
-        time.sleep(intervalRequest)
+	threadTimerGrabber.start()
+	while(True):
+		time.sleep(intervalRequest)
 
 if __name__ == '__main__':
-    main()
+	main()
 
 #---END---#

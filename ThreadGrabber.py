@@ -10,27 +10,33 @@ from enum import Enum
 import signal
 
 #---Library---#
-import ArpOandaPy as oanda
 import OandaPyLib as opl
-from ArpCSVList import ArpCSVList
+import ArpCSVList as dataMng
+import MovingAverage as ma
 
 #---Data Manager---#
-dataMng = ArpCSVList()
+
 
 class ThreadGrabber():
-    def __init__(self, interval, startDelay):
-        self.startDelay = startDelay
-        self.interval = interval
-    
-    def task(self, arg, args):
-        logger = "ThreadTimerGrabber---{}".format(datetime.now().strftime("%Y/%m/%d %H:%M.%S"))
-        timeGetPrice, ask, bid = opl.GetPrices()
-        dataMng.setMarketPrice(ask, bid)
-        logger = logger + ',' + str(timeGetPrice) + ',' + str(ask) + ',' + str(bid)
-        print(logger)
-    
-    def start(self):
-        signal.signal(signal.SIGALRM, self.task)
-        signal.setitimer(signal.ITIMER_REAL, self.startDelay, self.interval)
+	def __init__(self, interval, startDelay):
+		self.startDelay = startDelay
+		self.interval = interval
+	
+	def taskGetPrice(self):
+		timeGetPrice, ask, bid = opl.GetPrices()
+		dataMng.setMarketPrice(ask, bid)
+		logger = "ThreadTimerGrabber---{}".format(datetime.now().strftime("%Y/%m/%d %H:%M.%S"))
+		logger = logger + ',' + str(timeGetPrice) + ',' + str(ask) + ',' + str(bid)
+		print(logger)
+	
+	def taskGetMovingAverage(self):
+		
+
+	def task(self, arg, args):
+		self.taskGetPrice()
+	
+	def start(self):
+		signal.signal(signal.SIGALRM, self.task)
+		signal.setitimer(signal.ITIMER_REAL, self.startDelay, self.interval)
 
 #---END---#

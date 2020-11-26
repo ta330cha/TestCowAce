@@ -30,7 +30,6 @@ class ArpOandaPy():
 
     def __del__(self):
         #Logout from DB
-        print("Destruct ArpOandaPy")
     
     def getTimeStamp(self):
         tableName = TimeStampTable
