@@ -36,14 +36,25 @@ oanda = oandapyV20.API(environment="live",access_token=authorization)
 OrderTemplatePathname = './Template/OrderTemplate.json'
 TransTemplatePathname = './Template/TransTemplate.json'
 TradeTemplatePathname = './Template/TradeTemplate.json'
+PriceTemplatePathname = './Template/PriceTemplate.json'
 OrderRequestsDirName = "./OrderRequests/"
 TransRequestsDirName = "./TransRequests/"
 TradeRequestsDirName = "./TradeRequests/"
+PriceDirName = "./Prices/"
 
 #---Settings---#
 MarginLevelLimit = 48
 
 #---Functions---#
+def getFileList(dirName):
+	ret = None
+	try:
+		temp = os.listdir(dirName)
+		ret = sorted(temp)
+	except Exception as e:
+		print(e)
+	return ret
+
 def GetMarginLevel():
 	ret = 0
 	try:
@@ -52,7 +63,7 @@ def GetMarginLevel():
 		marginAvailable = float(res["account"]["marginAvailable"])
 		marginUsed = float(res["account"]["marginUsed"])
 		ret = 50 * marginUsed / marginAvailable
-	except Exception as identifier:
+	except Exception as e:
 		print(e)
 	return ret
 
@@ -67,6 +78,57 @@ def GetPrices():
 	except Exception as e:
 		print(e)
 	return priceTime, asksPrice, bidsPrice
+
+def GetJsonPrices():
+	ask = 0
+	bid = 0
+	try:
+		files = getFileList(PriceDirName)
+		flag = True
+		if not files:
+			flag = False
+		if flag == True:
+			pathname = PriceDirName + "/" + files[0]
+			ask, bid = GetJsonPricesPathname(pathname)
+	except Exception as e:
+		print(e)
+	return ask, bid
+
+def GetJsonPricesPathname(pathname):
+	ask = 0
+	bid = 0
+	try:
+		params = readParam(pathname)
+		ask = float(params["asks"])
+		bid = float(params["bids"])
+		os.remove(pathname)	
+	except Exception as e:
+		print(e)
+	return ask, bid
+
+def GetJsonPricesList():
+	count = 0
+	askList = []
+	bidList = []
+	try:
+		files = getFileList(PriceDirName)
+		flag = True
+		if not files:
+			flag = False
+		while flag == True:
+			count = count + 1
+			pathname = PriceDirName + "/" + files[0]
+			ask, bid = GetJsonPricesPathname(pathname)
+			askList.append(ask)
+			bidList.append(bid)
+			files = os.listdir(PriceDirName)
+			if not files:
+				flag = False
+			else:
+				flag = True
+	except Exception as e:
+		print(e)
+	return askList, bidList, count
 
 def makeOrder(price, takeProfitPrice, orderType, units):
 	pathname = OrderTemplatePathname
@@ -99,13 +161,17 @@ def dumpParam(params, dirName):
 	try:
 		with open(pathname, "w") as fw:
 			json.dump(params, fw)
-		return pathname
 	except Exception as e:
 		print(e)
-	return None
+		return None
+	return pathname
 
 def dumpOrderParam(params):
 	dirName = OrderRequestsDirName
+	return dumpParam(params, dirName)
+
+def dumpPriceParam(params):
+	dirName = PriceDirName
 	return dumpParam(params, dirName)
 
 def dumpTradeParam(params):
@@ -188,7 +254,7 @@ def requestTradeCRCDOPathname(pathname):
 def RequestOrder():
 	flag = True
 	try:
-		files = os.listdir(OrderRequestsDirName)
+		files = getFileList(OrderRequestsDirName)
 		if not files:
 			flag = False
 		if flag == True:
@@ -202,7 +268,7 @@ def RequestOrder():
 def RequestTradeCRCDO():
 	flag = True
 	try:
-		files = os.listdir(TradeRequestsDirName)
+		files = getFileList(TradeRequestsDirName)
 		if not files:
 			flag = False
 		if flag == True:
@@ -212,5 +278,21 @@ def RequestTradeCRCDO():
 	except Exception as e:
 		print(e)
 	return flag
+
+def DumpPrice(timeGetPrice, asksPrice, bidsPrice):
+	pathname = None
+	rParams = readParam(PriceTemplatePathname)
+	try:
+		rParams["instruments"] = str(instrument)
+		rParams["time"] = str(timeGetPrice)
+		rParams["asks"] = str(asksPrice)
+		rParams["bids"] = str(bidsPrice)
+		dumpPriceParam(rParams)
+	except Exception as e:
+		print(e)
+	return pathname
+
+def GetOpenTradeList():
+	
 
 #---END---#

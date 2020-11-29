@@ -7,58 +7,31 @@ import os
 import pandas as pd
 import numpy as np
 
-#---Library---#
-import ArpCSVList as dataMng
-
-#---FileName---#
-DataFileName = "MarketPrice.csv"
-MovingAverageSDataFileName = "MovingAverageS.csv"
-MovingAverageMDataFileName = "MovingAverageM.csv"
-MovingAverageLDataFileName = "MovingAverageL.csv"
-
 #---MovingAverageSize---#
-SizeS = 10
-SizeM = 20
-SizeL = 40
+SizeS = 5
+SizeM = 7
+SizeL = 10
 
 #---Func---#
-def writeCSV(prices, FileName):
-	try:
-		with open(FileName, "a") as fw:
-			writer = csv.writer(fw)
-			writer.writerow(prices)
-		return True
-	except Exception as e:
-		print(e)
-	return False
-
-def getData(size):
+def MovingAverage(data, size):
 	ret = None
 	try:
-		df = pd.read_csv(DataFileName)
-		ret = df.tail(size)
+		#ret = np.convolve(data, np.ones(size)/size, mode='valid')
+		ret = np.convolve(data, np.ones(size)/size, mode='same')
 	except Exception as e:
 		print(e)
 	return ret
 
-def MeanData(size):
-	ret = None
+def GetMovingAverages(data):
+	dataS = None
+	dataM = None
+	dataL = None
 	try:
-		data = getData(size)
-		ret = np.mean(data)
+		dataS = MovingAverage(data, SizeS)
+		dataM = MovingAverage(data, SizeM)
+		dataL = MovingAverage(data, SizeL)
 	except Exception as e:
 		print(e)
-	return ret
-
-def SetMovingAverage():
-	try:
-		writeCSV(MeanData(SizeS), MovingAverageSDataFileName)
-		writeCSV(MeanData(SizeM), MovingAverageMDataFileName)
-		writeCSV(MeanData(SizeL), MovingAverageLDataFileName)
-		return True
-	except Exception as e:
-		ret = False
-		print(e)
-	return False
+	return dataS, dataM, dataL
 
 #---END---#
