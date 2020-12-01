@@ -46,7 +46,7 @@ def readCSV():
 	return reader
 
 
-def setMarketPrice(askPrice, bidPrice):
+def SetMarketPrice(askPrice, bidPrice):
 	table = [askPrice, bidPrice]
 	try:
 		writeCSV(table)

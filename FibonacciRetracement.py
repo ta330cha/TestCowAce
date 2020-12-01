@@ -4,6 +4,7 @@ import sys
 import threading
 from datetime import datetime
 import os
+import math
 import pandas as pd
 import numpy as np
 from scipy import signal
@@ -20,8 +21,14 @@ SizeL = 10
 
 #---Settings---#
 FibonacciRate = 0.618
+Digit = 4
+DigitDec = 10 ** (Digit - 1)
 
 #---Func---#
+def getFloor(val):
+	ret = math.floor(val * DigitDec) / DigitDec
+	return ret
+
 def EstMaximaAndMinimal(data):
 	retMax = 0
 	retMin = 0
@@ -51,8 +58,8 @@ def EstFibonacciRetracement(askData, bidData):
 		distL = (bidMax - askMin) * FibonacciRate
 		distS = (askMax - bidMin) * FibonacciRate
 		if distS > 0:
-			retMax = askMin + distS
-			retMin = bidMax - distS
+			retMax = getFloor(askMin + distS)
+			retMin = getFloor(bidMax - distS)
 	except Exception as e:
 		print(e)
 	return retMax, retMin

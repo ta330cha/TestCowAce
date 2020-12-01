@@ -20,32 +20,38 @@ import FibonacciRetracement as fibo
 LimitDiffPrice = 0.05
 TradeLot = 10
 
+#---Local Var---#
 class ThreadTrader():
 	def __init__(self, interval, startDelay):
 		self.startDelay = startDelay
 		self.interval = interval
 	
-	def taskSetPosition(self):
+	def taskSetPosition(self, askList, bidList, askNow, bidNow):
 		print("---SetPosition---")
 
-	def taskTrade(self):
-		askList, bidList, count = opl.GetJsonPricesList()
-		askNow, bidNow = askList[-1], bidList[-1]
+	def taskTrade(self, askList, bidList, askNow, bidNow):
 		askData = np.array(askList)
 		bidData = np.array(bidList)
 		trendFlag = dect.EstDecisionTrend(askData, bidData)
 		fibMax, fibMin = fibo.EstFibonacciRetracement(askData, bidData)
-		print("Trend = {0}, FibonacciMax = {1}, FibonacciMin = {2}".format(trendFlag, fibMax, fibMin))
+		print("AsKNow = {0}, BidNow = {1}, Trend = {2}, FibonacciMax = {3}, FibonacciMin = {4}".format(askNow, bidNow, trendFlag, fibMax, fibMin))
 		if trendFlag > 0 and fibMax - bidNow > LimitDiffPrice:
 			opl.BuyStop(bidNow+LimitDiffPrice, fibMax, TradeLot)
 		elif trendFlag < 0 and askNow - fibMin > LimitDiffPrice:
 			opl.SellStop(askNow-LimitDiffPrice, fibMin, TradeLot)
 		else:
-			print("Trend = {0}, FibonacciMax = {1}, FibonacciMin = {2}".format(trendFlag, fibMax, fibMin))
+			print("No Order")
+		
 
 	def task(self, arg, args):
-		self.taskSetPosition()
-		self.taskTrade()
+		askList, bidList, count = opl.GetJsonPricesList()
+		print("Data Count = {}".format(count))
+		askNow, bidNow = askList[-1], bidList[-1]
+		self.taskSetPosition(askList, bidList, askNow, bidNow)
+		if opl.GetMarginLevel() < opl.MarginLevelLimit:
+			self.taskTrade(askList, bidList, askNow, bidNow)
+		else:
+			print("Margin Limit Over!!")
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)

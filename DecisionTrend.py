@@ -4,6 +4,7 @@ import sys
 import threading
 from datetime import datetime
 import os
+import math
 import pandas as pd
 import numpy as np
 from scipy import signal
@@ -43,10 +44,10 @@ def CovTrend(data):
 		size = data.size
 		xaxis = np.arange(size)
 		cov = np.cov(xaxis, data)[0][1]
-		print(cov)
-		if cov > diff:
+		absCov = math.fabs(cov)
+		if absCov > diff and cov > 0:
 			retReg = 1
-		elif cov < diff:
+		elif absCov > diff and cov < 0:
 			retReg = -1
 		else:
 			retReg = 0

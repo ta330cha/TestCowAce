@@ -293,6 +293,7 @@ def DumpPrice(timeGetPrice, asksPrice, bidsPrice):
 	return pathname
 
 def GetOpenTradeList():
-	
+	print("---GetOpenTradeList---")
+
 
 #---END---#

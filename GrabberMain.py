@@ -31,7 +31,7 @@ def main():
 	if len(sys.argv) > 1:
 		if sys.argv[1] == 'DataSetMode':
 			setDB = True
-		elif sys.argv[1] == 'TraderMode':
+		elif sys.argv[1] == 'TraderMode' or sys.argv[1] == 'TradeMode':
 			setDB = False
 		else:
 			setDB = True
