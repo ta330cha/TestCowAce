@@ -15,10 +15,10 @@ from oandapyV20 import API
 from oandapyV20.endpoints.trades import TradeCRCDO, TradeDetails
 import oandapyV20.endpoints.positions as positions
 import oandapyV20.endpoints.trades as trades
+import oandapyV20.endpoints.transactions as trans
 
 #---My Package---#
 import OandaPyLib as opl
-from ArpCSVList import ArpCSVList
 
 #---Account Info---#
 url = os.environ.get('OANDA_API_URL', None)
@@ -28,23 +28,23 @@ authorization = os.environ.get('OANDA_API_AUTHORIZATION', None)
 instrument = os.environ.get('OANDA_API_INSTRUMENT', None)
 
 #---Manager---#
-dataMng = ArpCSVList()
 
+#---API---#
+api = API(access_token=authorization)
+#oanda = oandapyV20.API(environment="live",access_token=authorization)
 
 #---Start Script---#
-api = API(access_token=authorization)
+ACC_NUMBER = account_id
+r=positions.PositionList(accountID=ACC_NUMBER)###EEE
+response=api.request(r)###EEE
+print(response)
+tradeBuyList = response['positions'][0]['long']['tradeIDs']
+print(tradeBuyList)
+r=trans.TransactionDetails(accountID=ACC_NUMBER, transactionID=tradeBuyList[0])
+response=api.request(r)###EEE
+print(response)
 
-data01={
-    "stopLoss": {
-        "price": "101.000",
-        "timeInForce": "GTC",
-    },
-}
-
-print(data01)
-
-trade_id = 217
-ep=TradeCRCDO(accountID=account_id,tradeID=trade_id,data=data01)
-rsp=api.request(ep)
+#tradeSellList = response['positions'][0]['short']['tradeIDs']
+#print(tradeSellList)
 
 #---End---#
