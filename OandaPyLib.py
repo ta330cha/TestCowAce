@@ -79,7 +79,7 @@ def GetPrices():
 		print(e)
 	return priceTime, asksPrice, bidsPrice
 
-def GetJsonPrices():
+def GetPricesJson():
 	ask = 0
 	bid = 0
 	try:
@@ -89,12 +89,12 @@ def GetJsonPrices():
 			flag = False
 		if flag == True:
 			pathname = PriceDirName + "/" + files[0]
-			ask, bid = GetJsonPricesPathname(pathname)
+			ask, bid = GetPricesJson(pathname)
 	except Exception as e:
 		print(e)
 	return ask, bid
 
-def GetJsonPricesPathname(pathname):
+def GetPricesJsonPathname(pathname):
 	ask = 0
 	bid = 0
 	try:
@@ -106,7 +106,7 @@ def GetJsonPricesPathname(pathname):
 		print(e)
 	return ask, bid
 
-def GetJsonPricesList():
+def GetPricesJsonList():
 	count = 0
 	askList = []
 	bidList = []
@@ -118,7 +118,7 @@ def GetJsonPricesList():
 		while flag == True:
 			count = count + 1
 			pathname = PriceDirName + "/" + files[0]
-			ask, bid = GetJsonPricesPathname(pathname)
+			ask, bid = GetPricesJsonPathname(pathname)
 			askList.append(ask)
 			bidList.append(bid)
 			files = os.listdir(PriceDirName)
@@ -292,8 +292,59 @@ def DumpPrice(timeGetPrice, asksPrice, bidsPrice):
 		print(e)
 	return pathname
 
-def GetOpenTradeList():
-	print("---GetOpenTradeList---")
+def GetPositionList():
+	try:
+		req = positions.PositionList(accountID=account_id)
+		res = api.request(req)
+	except Exception as e:
+		print(e)
+	return res
 
+def GetBuyPositionList(positionList):
+	return positionList['positions'][0]['long']['tradeIDs']
+
+def GetSellPositionList(positionList):
+	return positionList['positions'][0]['short']['tradeIDs']
+
+def GetPositonPrice(tradeId):
+	ret = 0
+	try:
+		req = trans.TransactionDetails(accountID=account_id, transactionID=tradeId)
+		res = api.request(req)
+		ret = res['transaction']['price']
+	except Exception as e:
+		print(e)
+	return ret
+
+def AdjustmentBuyPosition(positionList, askNow, bidNow, limitDiffPrice):
+	ret = False
+	try:
+		for tradeId in positionList:
+			if opl.GetPositonPrice(tradeId) < askNow - limitDiffPrice:
+				stopLossPrice = askNow - limitDiffPrice
+				opl.SetStopLoss(tradeId, stopLossPrice)
+				ret = True
+				print("Set StopLoss as {0} for {1}".format(stopLossPrice, tradeId))
+			else:
+				print("Did not Set StopLoss for {0}".format(tradeId))
+	except Exception as e:
+		print(e)
+	return ret
+
+def AdjustmentSellPosition(sellPositionList, askNow, bidNow, limitDiffPrice):
+	ret = False
+	try:
+		for tradeId in positionList:
+			if opl.GetPositonPrice(tradeId) > bidNow - limitDiffPrice:
+				stopLossPrice = bidNow + limitDiffPrice
+				opl.SetStopLoss(tradeId, stopLossPrice)
+				ret = True
+				print("Set StopLoss as {0} for {1}".format(stopLossPrice, tradeId))
+			else:
+				ret = False
+				print("Did not Set StopLoss for {0}".format(tradeId))
+	except Exception as e:
+		print(e)
+	return ret
 
 #---END---#

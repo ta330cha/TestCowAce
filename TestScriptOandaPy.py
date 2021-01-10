@@ -35,14 +35,16 @@ api = API(access_token=authorization)
 
 #---Start Script---#
 ACC_NUMBER = account_id
-r=positions.PositionList(accountID=ACC_NUMBER)###EEE
-response=api.request(r)###EEE
-print(response)
+r=positions.PositionList(accountID=ACC_NUMBER)
+response=api.request(r)
+#print(response)
 tradeBuyList = response['positions'][0]['long']['tradeIDs']
 print(tradeBuyList)
 r=trans.TransactionDetails(accountID=ACC_NUMBER, transactionID=tradeBuyList[0])
-response=api.request(r)###EEE
-print(response)
+response=api.request(r)
+OrderedPrice = response['transaction']['price']
+print(OrderedPrice)
+
 
 #tradeSellList = response['positions'][0]['short']['tradeIDs']
 #print(tradeSellList)

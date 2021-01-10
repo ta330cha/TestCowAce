@@ -41,7 +41,7 @@ def main():
 	while(True):
 		try:
 			if setDB == True:
-				ask, bid = opl.GetJsonPrices()
+				ask, bid = opl.GetPricesJson()
 				flag = False
 				if ask > 0 and bid > 0:
 					flag = True

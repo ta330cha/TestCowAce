@@ -27,7 +27,11 @@ class ThreadTrader():
 		self.interval = interval
 	
 	def taskSetPosition(self, askList, bidList, askNow, bidNow):
-		print("---SetPosition---")
+		positionList = opl.GetPositionList()
+		buyPositionList = opl.GetBuyPositionList(positionList)
+		opl.AdjustmentBuyPosition(buyPositionList, askNow, bidNow, LimitDiffPrice)
+		sellPositionList = opl.GetSellPositionList(positionList)
+		opl.AdjustmentSellPosition(sellPositionList, askNow, bidNow, LimitDiffPrice)
 
 	def taskTrade(self, askList, bidList, askNow, bidNow):
 		askData = np.array(askList)
@@ -41,10 +45,9 @@ class ThreadTrader():
 			opl.SellStop(askNow-LimitDiffPrice, fibMin, TradeLot)
 		else:
 			print("No Order")
-		
-
+	
 	def task(self, arg, args):
-		askList, bidList, count = opl.GetJsonPricesList()
+		askList, bidList, count = opl.GetPricesJsonList()
 		print("Data Count = {}".format(count))
 		askNow, bidNow = askList[-1], bidList[-1]
 		self.taskSetPosition(askList, bidList, askNow, bidNow)
