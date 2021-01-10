@@ -311,7 +311,7 @@ def GetPositonPrice(tradeId):
 	try:
 		req = trans.TransactionDetails(accountID=account_id, transactionID=tradeId)
 		res = api.request(req)
-		ret = res['transaction']['price']
+		ret = float(res['transaction']['price'])
 	except Exception as e:
 		print(e)
 	return ret
@@ -320,9 +320,9 @@ def AdjustmentBuyPosition(positionList, askNow, bidNow, limitDiffPrice):
 	ret = False
 	try:
 		for tradeId in positionList:
-			if opl.GetPositonPrice(tradeId) < askNow - limitDiffPrice:
+			if GetPositonPrice(tradeId) < askNow - limitDiffPrice:
 				stopLossPrice = askNow - limitDiffPrice
-				opl.SetStopLoss(tradeId, stopLossPrice)
+				SetStopLoss(tradeId, stopLossPrice)
 				ret = True
 				print("Set StopLoss as {0} for {1}".format(stopLossPrice, tradeId))
 			else:
@@ -335,9 +335,9 @@ def AdjustmentSellPosition(sellPositionList, askNow, bidNow, limitDiffPrice):
 	ret = False
 	try:
 		for tradeId in positionList:
-			if opl.GetPositonPrice(tradeId) > bidNow - limitDiffPrice:
+			if GetPositonPrice(tradeId) > bidNow - limitDiffPrice:
 				stopLossPrice = bidNow + limitDiffPrice
-				opl.SetStopLoss(tradeId, stopLossPrice)
+				SetStopLoss(tradeId, stopLossPrice)
 				ret = True
 				print("Set StopLoss as {0} for {1}".format(stopLossPrice, tradeId))
 			else:

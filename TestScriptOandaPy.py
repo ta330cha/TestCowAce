@@ -17,8 +17,11 @@ import oandapyV20.endpoints.positions as positions
 import oandapyV20.endpoints.trades as trades
 import oandapyV20.endpoints.transactions as trans
 
-#---My Package---#
+#---Library---#
 import OandaPyLib as opl
+import MovingAverage as ma
+import DecisionTrend as dect
+import FibonacciRetracement as fibo
 
 #---Account Info---#
 url = os.environ.get('OANDA_API_URL', None)
@@ -44,6 +47,13 @@ r=trans.TransactionDetails(accountID=ACC_NUMBER, transactionID=tradeBuyList[0])
 response=api.request(r)
 OrderedPrice = response['transaction']['price']
 print(OrderedPrice)
+
+askNow = 103.886
+bidNow = 103.970
+LimitDiffPrice = 0.05
+positionList = opl.GetPositionList()
+buyPositionList = opl.GetBuyPositionList(positionList)
+opl.AdjustmentBuyPosition(buyPositionList, askNow, bidNow, LimitDiffPrice)
 
 
 #tradeSellList = response['positions'][0]['short']['tradeIDs']
