@@ -306,6 +306,17 @@ def GetBuyPositionList(positionList):
 def GetSellPositionList(positionList):
 	return positionList['positions'][0]['short']['tradeIDs']
 
+def GetPositionLists():
+	buyPositionList = None
+	sellPositionList = None
+	try:
+		positionList = GetPositionList()
+		buyPositionList = GetBuyPositionList(positionList)
+		sellPositionList = GetSellPositionList(positionList)
+	except Exception as e:
+		print(e)
+	return buyPositionList, sellPositionList
+
 def GetPositonPrice(tradeId):
 	ret = 0
 	try:

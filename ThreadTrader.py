@@ -27,10 +27,8 @@ class ThreadTrader():
 		self.interval = interval
 	
 	def taskSetPosition(self, askList, bidList, askNow, bidNow):
-		positionList = opl.GetPositionList()
-		buyPositionList = opl.GetBuyPositionList(positionList)
+		buyPositionList, sellPositionList  = opl.GetPositionLists()
 		opl.AdjustmentBuyPosition(buyPositionList, askNow, bidNow, LimitDiffPrice)
-		sellPositionList = opl.GetSellPositionList(positionList)
 		opl.AdjustmentSellPosition(sellPositionList, askNow, bidNow, LimitDiffPrice)
 
 	def taskTrade(self, askList, bidList, askNow, bidNow):
