@@ -37,6 +37,10 @@ def main():
 			setDB = True
 	else:
 		setDB = True
+	if setDB == True:
+		print("DataSetMode")
+	else:
+		print("TraderMode")
 	threadTimerGrabber.start()
 	while(True):
 		try:
@@ -46,7 +50,7 @@ def main():
 				if ask > 0 and bid > 0:
 					flag = True
 				if flag == True:
-					dataMng.setMarketPrice(ask, bid)
+					dataMng.SetMarketPrice(ask, bid)
 					time.sleep(intervalRequest)
 		except Exception as e:
 			print(e)

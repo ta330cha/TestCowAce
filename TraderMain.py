@@ -16,9 +16,9 @@ import OandaPyLib as opl
 from ThreadTrader import ThreadTrader
 
 #---Settings---#
-IntervalTrader = 600 # = 600sec = 10min
+IntervalTrader = 300 # = 600sec = 10min
 #IntervalTrader = 60 # = 60sec = 1min
-startDelay = IntervalTrader
+startDelay = IntervalTrader/100
 #startDelay = 1
 intervalRequest = 1
 

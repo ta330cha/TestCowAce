@@ -21,6 +21,9 @@ import oandapyV20.endpoints.positions as positions
 import oandapyV20.endpoints.transactions as trans
 import oandapyV20.endpoints.trades as trades
 
+#---Library---#
+import DebugLib as debug
+
 #---Account Info---#
 url = os.environ.get('OANDA_API_URL', None)
 account_id = os.environ.get('OANDA_API_ACCOUNT_ID', None)
@@ -89,7 +92,7 @@ def GetPricesJson():
 			flag = False
 		if flag == True:
 			pathname = PriceDirName + "/" + files[0]
-			ask, bid = GetPricesJson(pathname)
+			ask, bid = GetPricesJsonPathname(pathname)
 	except Exception as e:
 		print(e)
 	return ask, bid
@@ -230,7 +233,7 @@ def requestOrderPathname(pathname):
 		req = orders.OrderCreate(accountID=account_id, data=params)
 		if req is not None:
 			res=api.request(req)
-			os.remove(pathname)
+			#os.remove(pathname)
 		return res
 	except Exception as e:
 		print(e)
@@ -245,7 +248,7 @@ def requestTradeCRCDOPathname(pathname):
 		req = trades.TradeCRCDO(accountID=account_id, tradeID=tradeId, data=params)
 		if req is not None:
 			res=api.request(req)
-			os.remove(pathname)
+			#os.remove(pathname)
 		return res
 	except Exception as e:
 		print(e)
@@ -259,7 +262,10 @@ def RequestOrder():
 			flag = False
 		if flag == True:
 			pathname = OrderRequestsDirName + "/" + files[0]
-			requestOrderPathname(pathname)
+			res = requestOrderPathname(pathname)
+			print(res)
+			debug.printDebug1(res, "RequestOrder")
+			print(res)
 		return flag
 	except Exception as e:
 		print(e)
@@ -273,7 +279,9 @@ def RequestTradeCRCDO():
 			flag = False
 		if flag == True:
 			pathname = TradeRequestsDirName + "/" + files[0]
-			requestTradeCRCDOPathname(pathname)
+			res = requestTradeCRCDOPathname(pathname)
+			debug.printDebug1(res, "RequestTradeCRCDO")
+			print(res)
 		return flag
 	except Exception as e:
 		print(e)
@@ -329,7 +337,10 @@ def GetPositonPrice(tradeId):
 
 def AdjustmentBuyPosition(positionList, askNow, bidNow, limitDiffPrice):
 	ret = False
+	if positionList is None:
+		return ret
 	try:
+		print("Set StopLoss {0}".format(len(positionList)))
 		for tradeId in positionList:
 			if GetPositonPrice(tradeId) < askNow - limitDiffPrice:
 				stopLossPrice = askNow - limitDiffPrice
@@ -342,8 +353,10 @@ def AdjustmentBuyPosition(positionList, askNow, bidNow, limitDiffPrice):
 		print(e)
 	return ret
 
-def AdjustmentSellPosition(sellPositionList, askNow, bidNow, limitDiffPrice):
+def AdjustmentSellPosition(positionList, askNow, bidNow, limitDiffPrice):
 	ret = False
+	if positionList is None:
+		return ret
 	try:
 		for tradeId in positionList:
 			if GetPositonPrice(tradeId) > bidNow - limitDiffPrice:

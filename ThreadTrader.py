@@ -17,7 +17,7 @@ import DecisionTrend as dect
 import FibonacciRetracement as fibo
 
 #---Setting---#
-LimitDiffPrice = 0.05
+LimitDiffPrice = 0.06
 TradeLot = 10
 
 #---Local Var---#
@@ -39,8 +39,12 @@ class ThreadTrader():
 		print("AsKNow = {0}, BidNow = {1}, Trend = {2}, FibonacciMax = {3}, FibonacciMin = {4}".format(askNow, bidNow, trendFlag, fibMax, fibMin))
 		if trendFlag > 0 and fibMax - bidNow > LimitDiffPrice:
 			opl.BuyStop(bidNow+LimitDiffPrice, fibMax, TradeLot)
+			debugWrite = f'Order at {bidNow+LimitDiffPrice} as Buy'
+			print(debugWrite)
 		elif trendFlag < 0 and askNow - fibMin > LimitDiffPrice:
 			opl.SellStop(askNow-LimitDiffPrice, fibMin, TradeLot)
+			debugWrite = f'Order at {bidNow+LimitDiffPrice} as Sell'
+			print(debugWrite)
 		else:
 			print("No Order")
 	

@@ -23,7 +23,7 @@ class ThreadGrabber():
 	def taskGetPrice(self):
 		timeGetPrice, ask, bid = opl.GetPrices()
 		opl.DumpPrice(timeGetPrice, ask, bid)
-		dataMng.SetMarketPrice(ask, bid)
+		#dataMng.SetMarketPrice(ask, bid)
 	
 	def task(self, arg, args):
 		self.taskGetPrice()
