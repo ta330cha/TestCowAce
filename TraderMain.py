@@ -14,31 +14,27 @@ import OandaPyLib as opl
 
 #---Threads---#
 from ThreadTrader import ThreadTrader
+from ThreadExecuteRequests import ThreadExecuteRequests
 
 #---Settings---#
 IntervalTrader = 300 # = 600sec = 10min
 #IntervalTrader = 60 # = 60sec = 1min
-startDelay = IntervalTrader/100
+IntervalExecuteRequests = 30
+StartDelay = IntervalTrader/100
 #startDelay = 1
-intervalRequest = 1
 
 #---Timer Threads---#
-threadTimerTrader = ThreadTrader(IntervalTrader, startDelay)
+threadTimerTrader = ThreadTrader(IntervalTrader, StartDelay)
+threadTimerExecuteRequests = ThreadExecuteRequests(IntervalExecuteRequests, StartDelay + IntervalTrader)
 
 #---Start---#
 def main():
 	print(sys.argv)
 	threadTimerTrader.start()
+	threadTimerExecuteRequests.start()
 	flag = True
 	while(flag):
-		if opl.RequestOrder() == True:
-			time.sleep(intervalRequest)
-		if opl.RequestTradeCRCDO() == True:
-			time.sleep(intervalRequest)
-		if opl.GetMarginLevel() < opl.MarginLevelLimit:
-			flag = True
-		else:
-			flag = False
+		time.sleep(IntervalTrader)
 
 if __name__ == '__main__':
 	main()

@@ -14,16 +14,19 @@ import ArpCSVList as dataMng
 
 #---Threads---#
 from ThreadGrabber import ThreadGrabber
+from ThreadSetData import ThreadSetData
 
 #---Settings---#
 #IntervalGrabber = 10 # = 10sec
 IntervalGrabber = 1 # = 1sec
+IntervalSetData = 10 # = 10sec
 startDelay = 1
 intervalRequest = 0.8
 setDB = False
 
 #---Timer Threads---#
 threadTimerGrabber = ThreadGrabber(IntervalGrabber, startDelay)
+threadTimerSetData = ThreadSetData(IntervalSetData, startDelay+IntervalGrabber)
 
 #---Start---#
 def main():
@@ -42,18 +45,10 @@ def main():
 	else:
 		print("TraderMode")
 	threadTimerGrabber.start()
+	if setDB == True:
+		threadTimerSetData.start()
 	while(True):
-		try:
-			if setDB == True:
-				ask, bid = opl.GetPricesJson()
-				flag = False
-				if ask > 0 and bid > 0:
-					flag = True
-				if flag == True:
-					dataMng.SetMarketPrice(ask, bid)
-					time.sleep(intervalRequest)
-		except Exception as e:
-			print(e)
+		time.sleep(intervalRequest)
 
 if __name__ == '__main__':
 	main()

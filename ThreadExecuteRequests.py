@@ -11,22 +11,31 @@ import signal
 
 #---Library---#
 import OandaPyLib as opl
-import ArpCSVList as dataMng
-import MovingAverage as ma
+
+#---Enum---#
+class RequestsMode(Enum):
+	Default = 0
+	Order = 1
+	TradeCRCDO = 2
+
+#---Variable---#
+RequestsModeFlag = RequestsMode.Default
 
 #---Data Manager---#
-class ThreadGrabber():
+class ThreadExecuteRequests():
 	def __init__(self, interval, startDelay):
 		self.startDelay = startDelay
 		self.interval = interval
 	
-	def taskGetPrice(self):
-		timeGetPrice, ask, bid = opl.GetPrices()
-		print("taskGetPrice")
-		opl.DumpPrice(timeGetPrice, ask, bid)
-	
 	def task(self, arg, args):
-		self.taskGetPrice()
+		if RequestsModeFlag == RequestsMode.Order:
+			opl.RequestOrder()
+			RequestsModeFlag = RequestsMode.TradeCRCDO
+		elif RequestsModeFlag == RequestsMode.TradeCRCDO:
+			opl.RequestTradeCRCDO()
+			RequestsModeFlag = RequestsMode.Default
+		else:
+			RequestsModeFlag = RequestsMode.Order
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)

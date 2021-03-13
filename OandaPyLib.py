@@ -9,7 +9,6 @@ import os
 from types import resolve_bases
 import requests
 import json
-import configparser
 
 import oandapyV20
 from oandapyV20 import API
@@ -23,13 +22,29 @@ import oandapyV20.endpoints.trades as trades
 
 #---Library---#
 import DebugLib as debug
+import Config as config
 
 #---Account Info---#
-url = os.environ.get('OANDA_API_URL', None)
-account_id = os.environ.get('OANDA_API_ACCOUNT_ID', None)
-contentType = os.environ.get('OANDA_API_CONTENT_TYPE', None)
-authorization = os.environ.get('OANDA_API_AUTHORIZATION', None)
-instrument = os.environ.get('OANDA_API_INSTRUMENT', None)
+GetFromEnvironment = False
+GetFromConfigFile = True
+if GetFromEnvironment == True:
+	url = os.environ.get('OANDA_API_URL', None)
+	account_id = os.environ.get('OANDA_API_ACCOUNT_ID', None)
+	contentType = os.environ.get('OANDA_API_CONTENT_TYPE', None)
+	authorization = os.environ.get('OANDA_API_AUTHORIZATION', None)
+	instrument = os.environ.get('OANDA_API_INSTRUMENT', None)
+elif GetFromConfigFile == True:
+	url = config.get("OANDA_API_URL")
+	account_id = config.get("OANDA_API_ACCOUNT_ID")
+	contentType = config.get("OANDA_API_CONTENT_TYPE")
+	authorization = config.get("OANDA_API_AUTHORIZATION")
+	instrument = config.get("OANDA_API_INSTRUMENT")
+else:
+	url = 'OANDA_API_URL'
+	account_id = 'OANDA_API_ACCOUNT_ID'
+	contentType = 'OANDA_API_CONTENT_TYPE'
+	authorization = 'OANDA_API_AUTHORIZATION'
+	instrument = 'OANDA_API_INSTRUMENT'
 
 #---APIs---#
 api = API(access_token=authorization)
@@ -72,6 +87,9 @@ def GetMarginLevel():
 
 def GetPrices():
 	params = {"instruments" : instrument}
+	priceTime = None
+	asksPrice = None
+	bidsPrice = None
 	try:
 		req = pricing.PricingInfo(accountID=account_id, params=params)
 		res = api.request(req)

@@ -15,18 +15,21 @@ import ArpCSVList as dataMng
 import MovingAverage as ma
 
 #---Data Manager---#
-class ThreadGrabber():
+class ThreadSetData():
 	def __init__(self, interval, startDelay):
 		self.startDelay = startDelay
 		self.interval = interval
 	
-	def taskGetPrice(self):
-		timeGetPrice, ask, bid = opl.GetPrices()
-		print("taskGetPrice")
-		opl.DumpPrice(timeGetPrice, ask, bid)
-	
 	def task(self, arg, args):
-		self.taskGetPrice()
+		try:
+			ask, bid = opl.GetPricesJson()
+			flag = False
+			if ask > 0 and bid > 0:
+				flag = True
+			if flag == True:
+				dataMng.SetMarketPrice(ask, bid)
+		except Exception as e:
+			print(e)
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)
