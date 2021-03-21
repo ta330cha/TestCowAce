@@ -10,7 +10,8 @@ from enum import Enum
 import signal
 
 #---Library---#
-import OandaPyLib as opl
+from OandaApiLib import RequestOrder
+from OandaApiLib import RequestTradeCRCDO
 
 #---Enum---#
 class RequestsMode(Enum):
@@ -18,27 +19,27 @@ class RequestsMode(Enum):
 	Order = 1
 	TradeCRCDO = 2
 
-#---Variable---#
-RequestsModeFlag = RequestsMode.Default
-
 #---Data Manager---#
 class ThreadExecuteRequests():
 	def __init__(self, interval, startDelay):
 		self.startDelay = startDelay
 		self.interval = interval
+		self.requestsModeFlag = RequestsMode.Default
 	
 	def task(self, arg, args):
 		if RequestsModeFlag == RequestsMode.Order:
-			opl.RequestOrder()
-			RequestsModeFlag = RequestsMode.TradeCRCDO
+			RequestOrder()
+			self.requestsModeFlag = RequestsMode.TradeCRCDO
 		elif RequestsModeFlag == RequestsMode.TradeCRCDO:
-			opl.RequestTradeCRCDO()
-			RequestsModeFlag = RequestsMode.Default
+			RequestTradeCRCDO()
+			self.requestsModeFlag = RequestsMode.Default
 		else:
-			RequestsModeFlag = RequestsMode.Order
+			self.requestsModeFlag = RequestsMode.Order
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)
 		signal.setitimer(signal.ITIMER_REAL, self.startDelay, self.interval)
+		debugWrite = "Start ThreadExecuteRequests"
+		print(debugWrite)
 
 #---END---#

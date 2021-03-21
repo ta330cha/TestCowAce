@@ -10,9 +10,8 @@ from enum import Enum
 import signal
 
 #---Library---#
-import OandaPyLib as opl
+from OandaJsonLib import GetPricesJson
 import ArpCSVList as dataMng
-import MovingAverage as ma
 
 #---Data Manager---#
 class ThreadSetData():
@@ -22,7 +21,7 @@ class ThreadSetData():
 	
 	def task(self, arg, args):
 		try:
-			ask, bid = opl.GetPricesJson()
+			ask, bid = GetPricesJson()
 			flag = False
 			if ask > 0 and bid > 0:
 				flag = True

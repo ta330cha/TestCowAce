@@ -17,21 +17,20 @@ from ThreadTrader import ThreadTrader
 from ThreadExecuteRequests import ThreadExecuteRequests
 
 #---Settings---#
-IntervalTrader = 300 # = 600sec = 10min
-#IntervalTrader = 60 # = 60sec = 1min
-IntervalExecuteRequests = 30
-StartDelay = IntervalTrader/100
-#startDelay = 1
+IntervalTrader = 10 # = 600sec = 10min
+StartDelayTrader = 1
+IntervalExecuteRequests = 10
+StartDelayExecuteRequests = IntervalTrader + IntervalTrader/2
 
 #---Timer Threads---#
-threadTimerTrader = ThreadTrader(IntervalTrader, StartDelay)
-threadTimerExecuteRequests = ThreadExecuteRequests(IntervalExecuteRequests, StartDelay + IntervalTrader)
+threadTimerTrader = ThreadTrader(IntervalTrader, StartDelayTrader)
+threadTimerExecuteRequests = ThreadExecuteRequests(IntervalExecuteRequests, StartDelayExecuteRequests)
 
 #---Start---#
 def main():
 	print(sys.argv)
 	threadTimerTrader.start()
-	threadTimerExecuteRequests.start()
+	#threadTimerExecuteRequests.start()
 	flag = True
 	while(flag):
 		time.sleep(IntervalTrader)

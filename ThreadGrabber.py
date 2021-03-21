@@ -10,9 +10,8 @@ from enum import Enum
 import signal
 
 #---Library---#
-import OandaPyLib as opl
-import ArpCSVList as dataMng
-import MovingAverage as ma
+from OandaApiLib import GetPrices
+from OandaJsonLib import DumpPrice
 
 #---Data Manager---#
 class ThreadGrabber():
@@ -20,16 +19,14 @@ class ThreadGrabber():
 		self.startDelay = startDelay
 		self.interval = interval
 	
-	def taskGetPrice(self):
-		timeGetPrice, ask, bid = opl.GetPrices()
-		print("taskGetPrice")
-		opl.DumpPrice(timeGetPrice, ask, bid)
-	
 	def task(self, arg, args):
-		self.taskGetPrice()
+		tsGetPrice, ask, bid = GetPrices()
+		DumpPrice(tsGetPrice, ask, bid)
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)
 		signal.setitimer(signal.ITIMER_REAL, self.startDelay, self.interval)
+		debugWrite = "ThreadGrabber"
+		print(debugWrite)
 
 #---END---#

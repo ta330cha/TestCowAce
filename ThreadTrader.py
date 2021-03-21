@@ -11,13 +11,13 @@ import signal
 import numpy as np
 
 #---Library---#
-import OandaPyLib as opl
-import MovingAverage as ma
+import OandaJsonLib as ojl
 import DecisionTrend as dect
-import FibonacciRetracement as fibo
 
 #---Setting---#
 LimitDiffPrice = 0.06
+StoplossDiffPrice = 0.08
+TakeProfitDiffPrice = 0.12
 TradeLot = 10
 
 #---Local Var---#
@@ -27,39 +27,49 @@ class ThreadTrader():
 		self.interval = interval
 	
 	def taskSetPosition(self, askList, bidList, askNow, bidNow):
-		buyPositionList, sellPositionList  = opl.GetPositionLists()
-		opl.AdjustmentBuyPosition(buyPositionList, askNow, bidNow, LimitDiffPrice)
-		opl.AdjustmentSellPosition(sellPositionList, askNow, bidNow, LimitDiffPrice)
+		buyPositionList, sellPositionList  = ojl.GetPositionLists()
+		ojl.AdjustmentBuyPosition(buyPositionList, askNow, bidNow, LimitDiffPrice)
+		ojl.AdjustmentSellPosition(sellPositionList, askNow, bidNow, LimitDiffPrice)
+
+	def taskIncreaseTrend(self):
+		tradePrice = bidNow+LimitDiffPrice
+		tradeTakeProfit = tradePrice + TakeProfitDiffPrice
+		tradeStojlossPrice = tradePrice - StoplossDiffPrice
+		ojl.BuyStop(tradePrice, tradeTakeProfit, tradeStojlossPrice, TradeLot)
+		debugWrite = f'Order at {tradePrice} as Buy'
+		print(debugWrite)
+	
+	def taskDecreaseTrend(self):
+		tradePrice = askNow+LimitDiffPrice
+		tradeTakeProfit = tradePrice - TakeProfitDiffPrice
+		tradeStojlossPrice = tradePrice + StoplossDiffPrice
+		ojl.SellStop(tradePrice, tradeTakeProfit, tradeStojlossPrice, TradeLot)
+		debugWrite = f'Order at {tradePrice} as Sell'
+		print(debugWrite)
 
 	def taskTrade(self, askList, bidList, askNow, bidNow):
 		askData = np.array(askList)
 		bidData = np.array(bidList)
 		trendFlag = dect.EstDecisionTrend(askData, bidData)
-		fibMax, fibMin = fibo.EstFibonacciRetracement(askData, bidData)
-		print("AsKNow = {0}, BidNow = {1}, Trend = {2}, FibonacciMax = {3}, FibonacciMin = {4}".format(askNow, bidNow, trendFlag, fibMax, fibMin))
-		if trendFlag > 0 and fibMax - bidNow > LimitDiffPrice:
-			opl.BuyStop(bidNow+LimitDiffPrice, fibMax, TradeLot)
-			debugWrite = f'Order at {bidNow+LimitDiffPrice} as Buy'
-			print(debugWrite)
-		elif trendFlag < 0 and askNow - fibMin > LimitDiffPrice:
-			opl.SellStop(askNow-LimitDiffPrice, fibMin, TradeLot)
-			debugWrite = f'Order at {bidNow+LimitDiffPrice} as Sell'
-			print(debugWrite)
+		if trendFlag > 0.05:
+			self.taskIncreaseTrend()
+		elif trendFlag < -0.05:
+			self.taskDecreaseTrend()
 		else:
 			print("No Order")
 	
 	def task(self, arg, args):
-		askList, bidList, count = opl.GetPricesJsonList()
+		askList, bidList, count = ojl.GetPricesJsonList()
 		print("Data Count = {}".format(count))
-		askNow, bidNow = askList[-1], bidList[-1]
-		self.taskSetPosition(askList, bidList, askNow, bidNow)
-		if opl.GetMarginLevel() < opl.MarginLevelLimit:
+		if count > 0:
+			askNow, bidNow = askList[-1], bidList[-1]
+			self.taskSetPosition(askList, bidList, askNow, bidNow)
 			self.taskTrade(askList, bidList, askNow, bidNow)
-		else:
-			print("Margin Limit Over!!")
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)
 		signal.setitimer(signal.ITIMER_REAL, self.startDelay, self.interval)
+		debugWrite = "Start ThreadTrader"
+		print(debugWrite)
 
 #---END---

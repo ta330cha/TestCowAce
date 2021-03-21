@@ -4,13 +4,17 @@
 #---Packages---#
 import json
 
-#---FILE_NAME---#
-ConfigFileName = './Configs/AccountInfo.json'
+#---DATA---#
 
-with open(ConfigFileName, "r") as fr:
-	__config = json.load(fr)
 
-def get(key):
-	return __config[key]
+class Config:
+	def __init__(self, ConfigFileName):
+		print(ConfigFileName)
+		self.__config = None
+		with open(ConfigFileName, "r") as fr:
+			self.__config = json.load(fr)
+	
+	def Get(self, key):
+		return self.__config[key]
 
 #---END---#
