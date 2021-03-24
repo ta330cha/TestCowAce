@@ -11,7 +11,6 @@ from scipy import signal
 from scipy.fftpack import fft, fftshift
 
 #---Library---#
-import OandaPyLib as opl
 import MovingAverage as ma
 
 #---MovingAverageSize---#

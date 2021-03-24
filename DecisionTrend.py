@@ -12,7 +12,6 @@ from scipy.fftpack import fft, fftshift
 from sklearn.linear_model import LinearRegression
 
 #---Library---#
-import OandaPyLib as opl
 import MovingAverage as ma
 import FibonacciRetracement as fr
 

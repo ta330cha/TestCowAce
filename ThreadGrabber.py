@@ -20,8 +20,8 @@ class ThreadGrabber():
 		self.interval = interval
 	
 	def task(self, arg, args):
-		tsGetPrice, ask, bid = GetPrices()
-		DumpPrice(tsGetPrice, ask, bid)
+		instrument, tsGetPrice, ask, bid = GetPrices()
+		DumpPrice(instrument, tsGetPrice, ask, bid)
 	
 	def start(self):
 		signal.signal(signal.SIGALRM, self.task)

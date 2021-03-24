@@ -76,7 +76,7 @@ def GetPrices():
 		bidsPrice = res['prices'][0]['bids'][0]['price']
 	except Exception as e:
 		print(e)
-	return priceTime, asksPrice, bidsPrice
+	return instrument, priceTime, asksPrice, bidsPrice
 
 def requestOrderPathname(pathname):
 	params = ReadParam(pathname)
@@ -148,5 +148,24 @@ def GetPositonPrice(tradeId):
 	except Exception as e:
 		print(e)
 	return ret
+
+def GetPositionList():
+	try:
+		req = positions.PositionList(accountID=account_id)
+		res = api.request(req)
+	except Exception as e:
+		print(e)
+	return res
+
+def GetPositionLists():
+	buyPositionList = None
+	sellPositionList = None
+	try:
+		positionList = GetPositionList()
+		buyPositionList = GetBuyPositionList(positionList)
+		sellPositionList = GetSellPositionList(positionList)
+	except Exception as e:
+		print(e)
+	return buyPositionList, sellPositionList
 
 #---END---#

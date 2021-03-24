@@ -182,7 +182,7 @@ def SetStopLoss(tradeId, stopLossPrice):
 		ret = True
 	return ret
 
-def DumpPrice(timeGetPrice, asksPrice, bidsPrice):
+def DumpPrice(instrument, timeGetPrice, asksPrice, bidsPrice):
 	pathname = None
 	rParams = ReadParam(PriceTemplatePathname)
 	try:
@@ -195,30 +195,11 @@ def DumpPrice(timeGetPrice, asksPrice, bidsPrice):
 		print(e)
 	return pathname
 
-def GetPositionList():
-	try:
-		req = positions.PositionList(accountID=account_id)
-		res = api.request(req)
-	except Exception as e:
-		print(e)
-	return res
-
 def GetBuyPositionList(positionList):
 	return positionList['positions'][0]['long']['tradeIDs']
 
 def GetSellPositionList(positionList):
 	return positionList['positions'][0]['short']['tradeIDs']
-
-def GetPositionLists():
-	buyPositionList = None
-	sellPositionList = None
-	try:
-		positionList = GetPositionList()
-		buyPositionList = GetBuyPositionList(positionList)
-		sellPositionList = GetSellPositionList(positionList)
-	except Exception as e:
-		print(e)
-	return buyPositionList, sellPositionList
 
 def AdjustmentBuyPosition(positionList, askNow, bidNow, limitDiffPrice):
 	ret = False
