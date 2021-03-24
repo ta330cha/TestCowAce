@@ -1,0 +1,10 @@
+{
+	"OrderTemplatePathname": "./Template/OrderTemplate.json",
+	"TransTemplatePathname" : "./Template/TransTemplate.json",
+	"TradeTemplatePathname" : "./Template/TradeTemplate.json",
+	"PriceTemplatePathname" : "./Template/PriceTemplate.json",
+	"OrderRequestsDirName" : "./OrderRequests/",
+	"TransRequestsDirName" : "./TransRequests/",
+	"TradeRequestsDirName" : "./TradeRequests/",
+	"PriceDirName" : "./Prices/"
+}
